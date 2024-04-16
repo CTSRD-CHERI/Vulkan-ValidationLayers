@@ -6450,13 +6450,21 @@ void Device::PreCallRecordDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDa
     RecordDestroyObject(privateDataSlot, kVulkanObjectTypePrivateDataSlot, record_obj.location);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 bool Device::PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                               VkPrivateDataSlot privateDataSlot, uint64_t data,
                                               const ErrorObject& error_obj) const {
     return PreCallValidateSetPrivateData(device, objectType, objectHandle, privateDataSlot, data, error_obj);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 bool Device::PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                               VkPrivateDataSlot privateDataSlot, uint64_t* pData,
                                               const ErrorObject& error_obj) const {
     return PreCallValidateGetPrivateData(device, objectType, objectHandle, privateDataSlot, pData, error_obj);

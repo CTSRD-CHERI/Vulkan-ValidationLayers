@@ -178,7 +178,11 @@ class Pipeline : public StateObject, public SubStateManager<PipelineSubState> {
     void Destroy() override;
     VkPipeline VkHandle() const { return handle_.Cast<VkPipeline>(); }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+    void SetHandle(VkPipeline p) { handle_.handle = CastToUintPtr(p); }
+#else // defined(__CHERI_PURE_CAPABILITY__)
     void SetHandle(VkPipeline p) { handle_.handle = CastToUint64(p); }
+#endif // defined(__CHERI_PURE_CAPABILITY__)
 
     bool IsGraphicsLibrary() const { return !HasFullState(); }
     bool HasFullState() const {

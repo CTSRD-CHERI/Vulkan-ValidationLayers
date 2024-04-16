@@ -538,8 +538,7 @@ template <VulkanObjectType id>
 struct VulkanObjectTypeInfo {};
 
 // The following line must match the vulkan_core.h condition guarding VK_DEFINE_NON_DISPATCHABLE_HANDLE
-#if defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__)) || defined(_M_X64) || defined(__ia64) || \
-    defined(_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
+#if (defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__)) || defined(_M_X64) || defined(__ia64) ||                 defined(_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)) && !defined(__CHERI_PURE_CAPABILITY__)
 #define TYPESAFE_NONDISPATCHABLE_HANDLES
 #else
 VK_DEFINE_NON_DISPATCHABLE_HANDLE(VkNonDispatchableHandle)
@@ -1249,10 +1248,18 @@ struct VulkanObjectTypeInfo<kVulkanObjectTypeIndirectCommandsLayoutEXT> {
 #endif  // TYPESAFE_NONDISPATCHABLE_HANDLES
 
 struct VulkanTypedHandle {
+#if defined(__CHERI_PURE_CAPABILITY__)
+    uintptr_t handle;
+#else // defined(__CHERI_PURE_CAPABILITY__)
     uint64_t handle;
+#endif // defined(__CHERI_PURE_CAPABILITY__)
     VulkanObjectType type;
     template <typename Handle>
+#if defined(__CHERI_PURE_CAPABILITY__)
+    VulkanTypedHandle(Handle handle_, VulkanObjectType type_) : handle(CastToUintPtr(handle_)), type(type_) {
+#else // defined(__CHERI_PURE_CAPABILITY__)
     VulkanTypedHandle(Handle handle_, VulkanObjectType type_) : handle(CastToUint64(handle_)), type(type_) {
+#endif // defined(__CHERI_PURE_CAPABILITY__)
 #ifdef TYPESAFE_NONDISPATCHABLE_HANDLES
         // For 32 bit it's not always safe to check for traits <-> type
         // as all non-dispatchable handles have the same type-id and thus traits,
@@ -1265,7 +1272,11 @@ struct VulkanTypedHandle {
 #ifdef TYPESAFE_NONDISPATCHABLE_HANDLES
         assert(type == VkHandleInfo<Handle>::kVulkanObjectType);
 #endif  // TYPESAFE_NONDISPATCHABLE_HANDLES
+#if defined(__CHERI_PURE_CAPABILITY__)
+        return CastFromUintPtr<Handle>(handle);
+#else // defined(__CHERI_PURE_CAPABILITY__)
         return CastFromUint64<Handle>(handle);
+#endif // defined(__CHERI_PURE_CAPABILITY__)
     }
     constexpr VulkanTypedHandle() : handle(0), type(kVulkanObjectTypeUnknown) {}
     bool operator==(const VulkanTypedHandle& other) const { return handle == other.handle && type == other.type; }

@@ -2055,25 +2055,41 @@ void Device::PostCallRecordDestroyPrivateDataSlot(VkDevice device, VkPrivateData
     // Host access to privateDataSlot must be externally synchronized
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PreCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PreCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                          VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {
     StartReadObjectParentInstance(device, record_obj.location);
     StartReadObject(privateDataSlot, record_obj.location);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                           VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {
     FinishReadObjectParentInstance(device, record_obj.location);
     FinishReadObject(privateDataSlot, record_obj.location);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PreCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PreCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                          VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {
     StartReadObjectParentInstance(device, record_obj.location);
     StartReadObject(privateDataSlot, record_obj.location);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PostCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PostCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                           VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {
     FinishReadObjectParentInstance(device, record_obj.location);
     FinishReadObject(privateDataSlot, record_obj.location);
@@ -6362,22 +6378,38 @@ void Device::PostCallRecordDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateD
     PostCallRecordDestroyPrivateDataSlot(device, privateDataSlot, pAllocator, record_obj);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PreCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PreCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                             VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {
     PreCallRecordSetPrivateData(device, objectType, objectHandle, privateDataSlot, data, record_obj);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                              VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {
     PostCallRecordSetPrivateData(device, objectType, objectHandle, privateDataSlot, data, record_obj);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PreCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PreCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                             VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {
     PreCallRecordGetPrivateData(device, objectType, objectHandle, privateDataSlot, pData, record_obj);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::PostCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void Device::PostCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                              VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {
     PostCallRecordGetPrivateData(device, objectType, objectHandle, privateDataSlot, pData, record_obj);
 }

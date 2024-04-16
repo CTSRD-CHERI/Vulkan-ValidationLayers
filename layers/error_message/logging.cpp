@@ -79,7 +79,11 @@ void DebugReport::SetDebugUtilsSeverityFlags(std::vector<VkLayerDbgFunctionState
     }
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void DebugReport::RemoveDebugUtilsCallback(uintptr_t callback) {
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void DebugReport::RemoveDebugUtilsCallback(uint64_t callback) {
+#endif // defined(__CHERI_PURE_CAPABILITY__)
     std::vector<VkLayerDbgFunctionState> &callbacks = debug_callback_list;
     auto item = callbacks.begin();
     for (item = callbacks.begin(); item != callbacks.end(); item++) {

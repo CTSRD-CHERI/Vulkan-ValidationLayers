@@ -32,7 +32,11 @@ struct ObjectState;
 class Tracker;
 class Device;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+using ObjectMap = vvl::concurrent_unordered_map<uintptr_t, std::shared_ptr<ObjectState>, 6>;
+#else // defined(__CHERI_PURE_CAPABILITY__)
 using ObjectMap = vvl::concurrent_unordered_map<uint64_t, std::shared_ptr<ObjectState>, 6>;
+#endif // defined(__CHERI_PURE_CAPABILITY__)
 
 // Used for GPL and we know there are at most only 4 libraries that should be used
 using ObjectMapGPL = vvl::concurrent_unordered_map<uint64_t, small_vector<std::shared_ptr<ObjectState>, 4>, 6>;
@@ -231,11 +235,19 @@ class Device : public vvl::base::Device {
     bool ValidateDescriptorSetLayoutCreateInfo(const VkDescriptorSetLayoutCreateInfo &create_info,
                                                const Location &create_info_loc) const;
     bool ValidateDescriptorWrite(VkWriteDescriptorSet const *desc, bool is_push_descriptor, const Location &loc) const;
+#if defined(__CHERI_PURE_CAPABILITY__)
+    bool ValidateAnonymousObject(uintptr_t object, VkObjectType core_object_type, const char *invalid_handle_vuid,
+#else // defined(__CHERI_PURE_CAPABILITY__)
     bool ValidateAnonymousObject(uint64_t object, VkObjectType core_object_type, const char *invalid_handle_vuid,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                  const char *wrong_parent_vuid, const Location &loc) const;
     bool ValidateAccelerationStructures(const char *src_handle_vuid, const char *dst_handle_vuid, uint32_t count,
                                         const VkAccelerationStructureBuildGeometryInfoKHR *infos, const Location &loc) const;
+#if defined(__CHERI_PURE_CAPABILITY__)
+    bool CheckPipelineObjectValidity(uintptr_t object_handle, const char *invalid_handle_vuid, const Location &loc) const;
+#else // defined(__CHERI_PURE_CAPABILITY__)
     bool CheckPipelineObjectValidity(uint64_t object_handle, const char *invalid_handle_vuid, const Location &loc) const;
+#endif // defined(__CHERI_PURE_CAPABILITY__)
 
     // helper methods for tracker
     template <typename T1>

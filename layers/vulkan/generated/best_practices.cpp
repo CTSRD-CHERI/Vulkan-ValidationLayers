@@ -450,7 +450,11 @@ void BestPractices::PostCallRecordCreatePrivateDataSlot(VkDevice device, const V
     bp_state::LogResult(*this, device, record_obj);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void BestPractices::PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void BestPractices::PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                                  VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {
     bp_state::LogResult(*this, device, record_obj);
 }
@@ -1496,7 +1500,11 @@ void BestPractices::PostCallRecordCreatePrivateDataSlotEXT(VkDevice device, cons
     PostCallRecordCreatePrivateDataSlot(device, pCreateInfo, pAllocator, pPrivateDataSlot, record_obj);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void BestPractices::PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else // defined(__CHERI_PURE_CAPABILITY__)
 void BestPractices::PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // defined(__CHERI_PURE_CAPABILITY__)
                                                     VkPrivateDataSlot privateDataSlot, uint64_t data,
                                                     const RecordObject& record_obj) {
     PostCallRecordSetPrivateData(device, objectType, objectHandle, privateDataSlot, data, record_obj);
