@@ -201,7 +201,11 @@ class HandleWrapper : public Logger {
         auto unique_id = global_unique_id++;
         unique_id = HashedUint64::hash(unique_id);
         assert(unique_id != 0);  // can't be 0, otherwise unwrap will apply special rule for VK_NULL_HANDLE
+#if defined(__CHERI_PURE_CAPABILITY__)
+        unique_id_mapping.insert_or_assign(unique_id, CastToUintPtr(new_created_handle));
+#else  // __CHERI_PURE_CAPABILITY__
         unique_id_mapping.insert_or_assign(unique_id, CastToUint64(new_created_handle));
+#endif // __CHERI_PURE_CAPABILITY__
         return (HandleType)unique_id;
     }
 
