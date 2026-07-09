@@ -12783,7 +12783,11 @@ bool Device::PreCallValidateDestroyPrivateDataSlot(VkDevice device, VkPrivateDat
     return skip;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 bool Device::PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                            VkPrivateDataSlot privateDataSlot, uint64_t data, const ErrorObject& error_obj) const {
     bool skip = false;
     Context context(*this, error_obj, extensions);
@@ -12794,7 +12798,11 @@ bool Device::PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectT
     return skip;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 bool Device::PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                            VkPrivateDataSlot privateDataSlot, uint64_t* pData, const ErrorObject& error_obj) const {
     bool skip = false;
     Context context(*this, error_obj, extensions);
@@ -22279,7 +22287,11 @@ bool Device::PreCallValidateDestroyPrivateDataSlotEXT(VkDevice device, VkPrivate
     return skip;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 bool Device::PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                               VkPrivateDataSlot privateDataSlot, uint64_t data,
                                               const ErrorObject& error_obj) const {
     bool skip = false;
@@ -22290,7 +22302,11 @@ bool Device::PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType obje
     return skip;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 bool Device::PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                               VkPrivateDataSlot privateDataSlot, uint64_t* pData,
                                               const ErrorObject& error_obj) const {
     bool skip = false;
