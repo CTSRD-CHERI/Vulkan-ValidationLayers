@@ -491,7 +491,11 @@ std::string DebugReport::GetMarkerObjectNameNoLock(const uint64_t object) const 
     return label;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+std::string DebugReport::FormatHandle(const char *handle_type_name, uintptr_t handle) const {
+#else // defined(__CHERI_PURE_CAPABILITY__)
 std::string DebugReport::FormatHandle(const char *handle_type_name, uint64_t handle) const {
+#endif // defined(__CHERI_PURE_CAPABILITY__)
     std::unique_lock<std::mutex> lock(debug_output_mutex);
     std::string handle_name = GetUtilsObjectNameNoLock(handle);
     if (handle_name.empty()) {
