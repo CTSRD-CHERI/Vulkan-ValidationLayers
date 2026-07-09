@@ -373,9 +373,17 @@ bool PreCallValidateCreatePrivateDataSlot(VkDevice device, const VkPrivateDataSl
                                           const ErrorObject& error_obj) const override;
 bool PreCallValidateDestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                            const VkAllocationCallbacks* pAllocator, const ErrorObject& error_obj) const override;
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 bool PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                    VkPrivateDataSlot privateDataSlot, uint64_t data, const ErrorObject& error_obj) const override;
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 bool PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                    VkPrivateDataSlot privateDataSlot, uint64_t* pData, const ErrorObject& error_obj) const override;
 bool PreCallValidateCmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo* pDependencyInfo,
                                         const ErrorObject& error_obj) const override;
@@ -1146,10 +1154,18 @@ bool PreCallValidateCreatePrivateDataSlotEXT(VkDevice device, const VkPrivateDat
                                              const ErrorObject& error_obj) const override;
 bool PreCallValidateDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                               const VkAllocationCallbacks* pAllocator, const ErrorObject& error_obj) const override;
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 bool PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                       VkPrivateDataSlot privateDataSlot, uint64_t data,
                                       const ErrorObject& error_obj) const override;
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 bool PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                       VkPrivateDataSlot privateDataSlot, uint64_t* pData,
                                       const ErrorObject& error_obj) const override;
 #ifdef VK_ENABLE_BETA_EXTENSIONS
