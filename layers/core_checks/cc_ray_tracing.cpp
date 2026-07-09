@@ -1447,7 +1447,11 @@ bool CoreChecks::PreCallValidateBuildAccelerationStructuresKHR(
                                 .dot(Field::data)
                                 .dot(Field::hostAddress, instance_i)
                                 .dot(Field::accelerationStructureReference),
+#if defined(__CHERI_PURE_CAPABILITY__)
+                            "(%" PRIxPTR ") does not reference a valid VkAccelerationStructureKHR object. %s is %s.",
+#else   // !__CHERI_PURE_CAPABILITY__
                             "(%" PRIu64 ") does not reference a valid VkAccelerationStructureKHR object. %s is %s.",
+#endif  // !__CHERI_PURE_CAPABILITY__
                             instance->accelerationStructureReference,
                             geometry_loc.dot(Field::geometry).dot(Field::instances).dot(Field::arrayOfPointers).Fields().c_str(),
                             string_VkBool32(geom.geometry.instances.arrayOfPointers).c_str());
