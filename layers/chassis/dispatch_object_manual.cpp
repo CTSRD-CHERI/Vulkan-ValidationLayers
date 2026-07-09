@@ -1619,23 +1619,40 @@ void *BuildUnwrappedUpdateTemplateBuffer(Device *layer_data, uint64_t descriptor
                 case kVulkanObjectTypeImage:
                     *(reinterpret_cast<VkDescriptorImageInfo *>(destination)) =
                         *(reinterpret_cast<VkDescriptorImageInfo *>(source));
+#if defined(__CHERI_PURE_CAPABILITY__)
+                    delete CastFromUintPtr<VkDescriptorImageInfo *>(source);
+#else   // !__CHERI_PURE_CAPABILITY__
                     delete CastFromUint64<VkDescriptorImageInfo *>(source);
+#endif  // !__CHERI_PURE_CAPABILITY__
                     break;
                 case kVulkanObjectTypeBuffer:
                     *(reinterpret_cast<VkDescriptorBufferInfo *>(destination)) =
+#if defined(__CHERI_PURE_CAPABILITY__)
+                        *(CastFromUintPtr<VkDescriptorBufferInfo *>(source));
+                    delete CastFromUintPtr<VkDescriptorBufferInfo *>(source);
+#else   // !__CHERI_PURE_CAPABILITY__
                         *(CastFromUint64<VkDescriptorBufferInfo *>(source));
                     delete CastFromUint64<VkDescriptorBufferInfo *>(source);
+#endif  // !__CHERI_PURE_CAPABILITY__
                     break;
                 case kVulkanObjectTypeBufferView:
                     *(reinterpret_cast<VkBufferView *>(destination)) = CastFromUint64<VkBufferView>(source);
                     break;
                 case kVulkanObjectTypeAccelerationStructureKHR:
                     *(reinterpret_cast<VkAccelerationStructureKHR *>(destination)) =
+#if defined(__CHERI_PURE_CAPABILITY__)
+                        CastFromUintPtr<VkAccelerationStructureKHR>(source);
+#else   // !__CHERI_PURE_CAPABILITY__
                         CastFromUint64<VkAccelerationStructureKHR>(source);
+#endif  // !__CHERI_PURE_CAPABILITY__
                     break;
                 case kVulkanObjectTypeAccelerationStructureNV:
                     *(reinterpret_cast<VkAccelerationStructureNV *>(destination)) =
+#if defined(__CHERI_PURE_CAPABILITY__)
+                        CastFromUintPtr<VkAccelerationStructureNV>(source);
+#else   // !__CHERI_PURE_CAPABILITY__
                         CastFromUint64<VkAccelerationStructureNV>(source);
+#endif  // !__CHERI_PURE_CAPABILITY__
                     break;
                 default:
                     assert(false);
