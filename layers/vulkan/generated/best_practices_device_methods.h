@@ -204,7 +204,11 @@ void PostCallRecordCreatePrivateDataSlot(VkDevice device, const VkPrivateDataSlo
                                          const VkAllocationCallbacks* pAllocator, VkPrivateDataSlot* pPrivateDataSlot,
                                          const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else   // !__CHERI_PURE_CAPABILITY__
 void PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                   VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) override;
 
 void PostCallRecordQueueSubmit2(VkQueue queue, uint32_t submitCount, const VkSubmitInfo2* pSubmits, VkFence fence,
@@ -617,7 +621,11 @@ void PostCallRecordCreatePrivateDataSlotEXT(VkDevice device, const VkPrivateData
                                             const VkAllocationCallbacks* pAllocator, VkPrivateDataSlot* pPrivateDataSlot,
                                             const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else   // !__CHERI_PURE_CAPABILITY__
 void PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                      VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) override;
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
