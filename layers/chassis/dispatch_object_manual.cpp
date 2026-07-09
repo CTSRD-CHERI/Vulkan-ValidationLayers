@@ -1540,7 +1540,11 @@ void *BuildUnwrappedUpdateTemplateBuffer(Device *layer_data, uint64_t descriptor
     auto const template_map_entry = layer_data->desc_template_createinfo_map.find(descriptorUpdateTemplate);
     auto const &create_info = template_map_entry->second->create_info;
     size_t allocation_size = 0;
+#if defined(__CHERI_PURE_CAPABILITY__)
+    std::vector<std::tuple<size_t, VulkanObjectType, uintptr_t, size_t>> template_entries;
+#else   // !__CHERI_PURE_CAPABILITY__
     std::vector<std::tuple<size_t, VulkanObjectType, uint64_t, size_t>> template_entries;
+#endif  // !__CHERI_PURE_CAPABILITY__
 
     for (uint32_t i = 0; i < create_info.descriptorUpdateEntryCount; i++) {
         for (uint32_t j = 0; j < create_info.pDescriptorUpdateEntries[i].descriptorCount; j++) {
@@ -1640,12 +1644,20 @@ void *BuildUnwrappedUpdateTemplateBuffer(Device *layer_data, uint64_t descriptor
     for (auto &this_entry : template_entries) {
         VulkanObjectType type = std::get<1>(this_entry);
         void *destination = (char *)unwrapped_data + std::get<0>(this_entry);
+#if defined(__CHERI_PURE_CAPABILITY__)
+        uintptr_t source = std::get<2>(this_entry);
+#else   // !__CHERI_PURE_CAPABILITY__
         uint64_t source = std::get<2>(this_entry);
+#endif  // !__CHERI_PURE_CAPABILITY__
         size_t size = std::get<3>(this_entry);
 
         if (size != 0) {
             assert(type == kVulkanObjectTypeUnknown);
+#if defined(__CHERI_PURE_CAPABILITY__)
+            memcpy(destination, CastFromUintPtr<void *>(source), size);
+#else   // !__CHERI_PURE_CAPABILITY__
             memcpy(destination, CastFromUint64<void *>(source), size);
+#endif  // !__CHERI_PURE_CAPABILITY__
         } else {
             switch (type) {
                 case kVulkanObjectTypeImage:
