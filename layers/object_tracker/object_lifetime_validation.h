@@ -98,7 +98,11 @@ class Tracker : public Logger {
     template <typename T1, typename T2>
     void CreateObject(T1 object, VulkanObjectType object_type, const VkAllocationCallbacks *pAllocator, const Location &loc,
                       T2 parent_object) {
+#if defined(__CHERI_PURE_CAPABILITY__)
+        CreateObject(VulkanTypedHandle(object, object_type), pAllocator, loc, HandleToUintPtr(parent_object));
+#else // defined(__CHERI_PURE_CAPABILITY__)
         CreateObject(VulkanTypedHandle(object, object_type), pAllocator, loc, HandleToUint64(parent_object));
+#endif // defined(__CHERI_PURE_CAPABILITY__)
     }
 
     template <typename T1>
@@ -261,7 +265,11 @@ class Device : public vvl::base::Device {
     template <typename T1>
     bool ValidateObject(T1 object, VulkanObjectType object_type, bool null_allowed, bool poisoned_object_allowed,
                         const char *invalid_handle_vuid, const char *wrong_parent_vuid, const Location &loc) const {
+#if defined(__CHERI_PURE_CAPABILITY__)
+        auto object_handle = HandleToUintPtr(object);
+#else // defined(__CHERI_PURE_CAPABILITY__)
         uint64_t object_handle = HandleToUint64(object);
+#endif // defined(__CHERI_PURE_CAPABILITY__)
 
         // special case if for pipeline if using GPL
         if (object_type == kVulkanObjectTypePipeline) {
