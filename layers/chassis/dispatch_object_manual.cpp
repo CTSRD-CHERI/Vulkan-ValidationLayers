@@ -1504,7 +1504,11 @@ void Device::DestroyDescriptorUpdateTemplate(VkDevice device, VkDescriptorUpdate
                                              const VkAllocationCallbacks *pAllocator) {
     if (!wrap_handles) return device_dispatch_table.DestroyDescriptorUpdateTemplate(device, descriptorUpdateTemplate, pAllocator);
     WriteLockGuard lock(dispatch_lock);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto descriptor_update_template_id = CastToUintPtr(descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t descriptor_update_template_id = CastToUint64(descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     desc_template_createinfo_map.erase(descriptor_update_template_id);
     lock.unlock();
 
@@ -1519,7 +1523,11 @@ void Device::DestroyDescriptorUpdateTemplateKHR(VkDevice device, VkDescriptorUpd
     if (!wrap_handles)
         return device_dispatch_table.DestroyDescriptorUpdateTemplateKHR(device, descriptorUpdateTemplate, pAllocator);
     WriteLockGuard lock(dispatch_lock);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto descriptor_update_template_id = CastToUintPtr(descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t descriptor_update_template_id = CastToUint64(descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     desc_template_createinfo_map.erase(descriptor_update_template_id);
     lock.unlock();
 
@@ -1551,7 +1559,11 @@ void *BuildUnwrappedUpdateTemplateBuffer(Device *layer_data, uint64_t descriptor
                     VkDescriptorImageInfo *wrapped_entry = new VkDescriptorImageInfo(*image_entry);
                     wrapped_entry->sampler = layer_data->Unwrap(image_entry->sampler);
                     wrapped_entry->imageView = layer_data->Unwrap(image_entry->imageView);
+#if defined(__CHERI_PURE_CAPABILITY__)
+                    template_entries.emplace_back(offset, kVulkanObjectTypeImage, CastToUintPtr(wrapped_entry), 0);
+#else   // !__CHERI_PURE_CAPABILITY__
                     template_entries.emplace_back(offset, kVulkanObjectTypeImage, CastToUint64(wrapped_entry), 0);
+#endif  // !__CHERI_PURE_CAPABILITY__
                 } break;
 
                 case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
@@ -1563,7 +1575,11 @@ void *BuildUnwrappedUpdateTemplateBuffer(Device *layer_data, uint64_t descriptor
 
                     VkDescriptorBufferInfo *wrapped_entry = new VkDescriptorBufferInfo(*buffer_entry);
                     wrapped_entry->buffer = layer_data->Unwrap(buffer_entry->buffer);
+#if defined(__CHERI_PURE_CAPABILITY__)
+                    template_entries.emplace_back(offset, kVulkanObjectTypeBuffer, CastToUintPtr(wrapped_entry), 0);
+#else   // !__CHERI_PURE_CAPABILITY__
                     template_entries.emplace_back(offset, kVulkanObjectTypeBuffer, CastToUint64(wrapped_entry), 0);
+#endif  // !__CHERI_PURE_CAPABILITY__
                 } break;
 
                 case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
@@ -1572,13 +1588,21 @@ void *BuildUnwrappedUpdateTemplateBuffer(Device *layer_data, uint64_t descriptor
                     allocation_size = std::max(allocation_size, offset + sizeof(VkBufferView));
 
                     VkBufferView wrapped_entry = layer_data->Unwrap(*buffer_view_handle);
+#if defined(__CHERI_PURE_CAPABILITY__)
+                    template_entries.emplace_back(offset, kVulkanObjectTypeBufferView, CastToUintPtr(wrapped_entry), 0);
+#else   // !__CHERI_PURE_CAPABILITY__
                     template_entries.emplace_back(offset, kVulkanObjectTypeBufferView, CastToUint64(wrapped_entry), 0);
+#endif  // !__CHERI_PURE_CAPABILITY__
                 } break;
                 case VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK: {
                     size_t numBytes = create_info.pDescriptorUpdateEntries[i].descriptorCount;
                     allocation_size = std::max(allocation_size, offset + numBytes);
                     // nothing to unwrap, just plain data
+#if defined(__CHERI_PURE_CAPABILITY__)
+                    template_entries.emplace_back(offset, kVulkanObjectTypeUnknown, CastToUintPtr(update_entry), numBytes);
+#else   // !__CHERI_PURE_CAPABILITY__
                     template_entries.emplace_back(offset, kVulkanObjectTypeUnknown, CastToUint64(update_entry), numBytes);
+#endif  // !__CHERI_PURE_CAPABILITY__
                     // to break out of the loop
                     j = create_info.pDescriptorUpdateEntries[i].descriptorCount;
                 } break;
@@ -1587,14 +1611,22 @@ void *BuildUnwrappedUpdateTemplateBuffer(Device *layer_data, uint64_t descriptor
                     allocation_size = std::max(allocation_size, offset + sizeof(VkAccelerationStructureNV));
 
                     VkAccelerationStructureNV wrapped_entry = layer_data->Unwrap(*accstruct_nv_handle);
+#if defined(__CHERI_PURE_CAPABILITY__)
+                    template_entries.emplace_back(offset, kVulkanObjectTypeAccelerationStructureNV, CastToUintPtr(wrapped_entry), 0);
+#else   // !__CHERI_PURE_CAPABILITY__
                     template_entries.emplace_back(offset, kVulkanObjectTypeAccelerationStructureNV, CastToUint64(wrapped_entry), 0);
+#endif  // !__CHERI_PURE_CAPABILITY__
                 } break;
                 case VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR: {
                     auto accstruct_khr_handle = reinterpret_cast<VkAccelerationStructureKHR *>(update_entry);
                     allocation_size = std::max(allocation_size, offset + sizeof(VkAccelerationStructureKHR));
 
                     VkAccelerationStructureKHR wrapped_entry = layer_data->Unwrap(*accstruct_khr_handle);
+#if defined(__CHERI_PURE_CAPABILITY__)
+                    template_entries.emplace_back(offset, kVulkanObjectTypeAccelerationStructureKHR, CastToUintPtr(wrapped_entry),
+#else   // !__CHERI_PURE_CAPABILITY__
                     template_entries.emplace_back(offset, kVulkanObjectTypeAccelerationStructureKHR, CastToUint64(wrapped_entry),
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                   0);
                 } break;
                 default:
@@ -1667,7 +1699,11 @@ void Device::UpdateDescriptorSetWithTemplate(VkDevice device, VkDescriptorSet de
                                              VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) {
     if (!wrap_handles)
         return device_dispatch_table.UpdateDescriptorSetWithTemplate(device, descriptorSet, descriptorUpdateTemplate, pData);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto template_handle = CastToUintPtr(descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t template_handle = CastToUint64(descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     void *unwrapped_buffer = nullptr;
     {
         ReadLockGuard lock(dispatch_lock);
@@ -1683,7 +1719,11 @@ void Device::UpdateDescriptorSetWithTemplateKHR(VkDevice device, VkDescriptorSet
                                                 VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void *pData) {
     if (!wrap_handles)
         return device_dispatch_table.UpdateDescriptorSetWithTemplateKHR(device, descriptorSet, descriptorUpdateTemplate, pData);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto template_handle = CastToUintPtr(descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t template_handle = CastToUint64(descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     void *unwrapped_buffer = nullptr;
     {
         ReadLockGuard lock(dispatch_lock);
@@ -1700,7 +1740,11 @@ void Device::CmdPushDescriptorSetWithTemplate(VkCommandBuffer commandBuffer, VkD
     if (!wrap_handles)
         return device_dispatch_table.CmdPushDescriptorSetWithTemplateKHR(commandBuffer, descriptorUpdateTemplate, layout, set,
                                                                          pData);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto template_handle = CastToUintPtr(descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t template_handle = CastToUint64(descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     void *unwrapped_buffer = nullptr;
     {
         ReadLockGuard lock(dispatch_lock);
@@ -1717,7 +1761,11 @@ void Device::CmdPushDescriptorSetWithTemplateKHR(VkCommandBuffer commandBuffer, 
     if (!wrap_handles)
         return device_dispatch_table.CmdPushDescriptorSetWithTemplateKHR(commandBuffer, descriptorUpdateTemplate, layout, set,
                                                                          pData);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto template_handle = CastToUintPtr(descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t template_handle = CastToUint64(descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     void *unwrapped_buffer = nullptr;
     {
         ReadLockGuard lock(dispatch_lock);
@@ -1734,7 +1782,11 @@ void Device::CmdPushDescriptorSetWithTemplate2(VkCommandBuffer commandBuffer,
                                                const VkPushDescriptorSetWithTemplateInfo *pPushDescriptorSetWithTemplateInfo) {
     if (!wrap_handles)
         return device_dispatch_table.CmdPushDescriptorSetWithTemplate2KHR(commandBuffer, pPushDescriptorSetWithTemplateInfo);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto template_handle = CastToUintPtr(pPushDescriptorSetWithTemplateInfo->descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t template_handle = CastToUint64(pPushDescriptorSetWithTemplateInfo->descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     void *unwrapped_buffer = nullptr;
     {
         ReadLockGuard lock(dispatch_lock);
@@ -1753,7 +1805,11 @@ void Device::CmdPushDescriptorSetWithTemplate2KHR(
     VkCommandBuffer commandBuffer, const VkPushDescriptorSetWithTemplateInfoKHR *pPushDescriptorSetWithTemplateInfo) {
     if (!wrap_handles)
         return device_dispatch_table.CmdPushDescriptorSetWithTemplate2KHR(commandBuffer, pPushDescriptorSetWithTemplateInfo);
+#if defined(__CHERI_PURE_CAPABILITY__)
+    auto template_handle = CastToUintPtr(pPushDescriptorSetWithTemplateInfo->descriptorUpdateTemplate);
+#else   // !__CHERI_PURE_CAPABILITY__
     uint64_t template_handle = CastToUint64(pPushDescriptorSetWithTemplateInfo->descriptorUpdateTemplate);
+#endif  // !__CHERI_PURE_CAPABILITY__
     void *unwrapped_buffer = nullptr;
     {
         ReadLockGuard lock(dispatch_lock);
