@@ -189,7 +189,11 @@ class HandleWrapper : public Logger {
     template <typename HandleType>
     HandleType Unwrap(HandleType wrapped_handle) {
         if (wrapped_handle == (HandleType)VK_NULL_HANDLE) return wrapped_handle;
+#if defined(__CHERI_PURE_CAPABILITY__)
+        auto iter = unique_id_mapping.find(CastToUintPtr(wrapped_handle));
+#else  // __CHERI_PURE_CAPABILITY__
         auto iter = unique_id_mapping.find(CastToUint64(wrapped_handle));
+#endif // __CHERI_PURE_CAPABILITY__
         if (iter == unique_id_mapping.end()) return (HandleType)0;
         return (HandleType)iter->second;
     }
@@ -211,23 +215,47 @@ class HandleWrapper : public Logger {
 
     template <typename HandleType>
     HandleType Find(HandleType wrapped_handle) const {
+#if defined(__CHERI_PURE_CAPABILITY__)
+        auto id = CastToUintPtr(wrapped_handle);
+#else  // __CHERI_PURE_CAPABILITY__
         uint64_t id = CastToUint64(wrapped_handle);
+#endif // __CHERI_PURE_CAPABILITY__
         auto iter = unique_id_mapping.find(id);
         if (iter != unique_id_mapping.end()) {
+#if defined(__CHERI_PURE_CAPABILITY__)
+            return CastFromUintPtr<HandleType>(iter->second);
+#else  // __CHERI_PURE_CAPABILITY__
             return CastFromUint64<HandleType>(iter->second);
+#endif // __CHERI_PURE_CAPABILITY__
         } else {
+#if defined(__CHERI_PURE_CAPABILITY__)
+            return CastFromUintPtr<HandleType>(0ULL);
+#else  // __CHERI_PURE_CAPABILITY__
             return CastFromUint<HandleType>(0ULL);
+#endif // __CHERI_PURE_CAPABILITY__
         }
     }
 
     template <typename HandleType>
     HandleType Erase(HandleType wrapped_handle) {
+#if defined(__CHERI_PURE_CAPABILITY__)
+        auto id = CastToUintPtr(wrapped_handle);
+#else  // __CHERI_PURE_CAPABILITY__
         uint64_t id = CastToUint64(wrapped_handle);
+#endif // __CHERI_PURE_CAPABILITY__
         auto iter = unique_id_mapping.pop(id);
         if (iter != unique_id_mapping.end()) {
+#if defined(__CHERI_PURE_CAPABILITY__)
+            return CastFromUintPtr<HandleType>(iter->second);
+#else  // __CHERI_PURE_CAPABILITY__
             return CastFromUint64<HandleType>(iter->second);
+#endif // __CHERI_PURE_CAPABILITY__
         } else {
+#if defined(__CHERI_PURE_CAPABILITY__)
+            return CastFromUintPtr<HandleType>(0ULL);
+#else  // __CHERI_PURE_CAPABILITY__
             return CastFromUint<HandleType>(0ULL);
+#endif // __CHERI_PURE_CAPABILITY__
         }
     }
 
