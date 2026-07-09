@@ -1052,7 +1052,11 @@ bool GpuShaderInstrumentor::IsPipelineSelectedForInstrumentation(VkPipeline pipe
         std::string pipeline_debug_name;
         {
             std::unique_lock<std::mutex> lock(debug_report->debug_output_mutex);
+#if defined(__CHERI_PURE_CAPABILITY__)
+            pipeline_debug_name = debug_report->GetUtilsObjectNameNoLock(HandleToUintPtr(pipeline));
+#else   // !__CHERI_PURE_CAPABILITY__
             pipeline_debug_name = debug_report->GetUtilsObjectNameNoLock(HandleToUint64(pipeline));
+#endif  // !__CHERI_PURE_CAPABILITY__
         }
 
         should_instrument_pipeline = gpuav_settings.MatchesAnyShaderSelectionRegex(pipeline_debug_name);
@@ -1080,7 +1084,11 @@ bool GpuShaderInstrumentor::IsShaderSelectedForInstrumentation(vku::safe_VkShade
             std::string shader_debug_name;
             {
                 std::unique_lock<std::mutex> lock(debug_report->debug_output_mutex);
+#if defined(__CHERI_PURE_CAPABILITY__)
+                shader_debug_name = debug_report->GetUtilsObjectNameNoLock(HandleToUintPtr(modified_shader));
+#else   // !__CHERI_PURE_CAPABILITY__
                 shader_debug_name = debug_report->GetUtilsObjectNameNoLock(HandleToUint64(modified_shader));
+#endif  // !__CHERI_PURE_CAPABILITY__
             }
             should_instrument_shader = gpuav_settings.MatchesAnyShaderSelectionRegex(shader_debug_name);
         }
@@ -1778,13 +1786,22 @@ std::string GpuShaderInstrumentor::GenerateDebugInfoMessage(VkCommandBuffer comm
     if (instrumented_shader->shader_module == VK_NULL_HANDLE && instrumented_shader->shader_object == VK_NULL_HANDLE) {
         std::unique_lock<std::mutex> lock(debug_report->debug_output_mutex);
         ss << "[Internal Error] - Unable to locate shader/pipeline handles used in command buffer "
+#if defined(__CHERI_PURE_CAPABILITY__)
+           << LookupDebugUtilsNameNoLock(debug_report, HandleToUintPtr(commandBuffer)) << "(" << HandleToUintPtr(commandBuffer)
+#else   // !__CHERI_PURE_CAPABILITY__
            << LookupDebugUtilsNameNoLock(debug_report, HandleToUint64(commandBuffer)) << "(" << HandleToUint64(commandBuffer)
+#endif  // !__CHERI_PURE_CAPABILITY__
            << ")\n";
         assert(true);
     } else {
         std::unique_lock<std::mutex> lock(debug_report->debug_output_mutex);
+#if defined(__CHERI_PURE_CAPABILITY__)
+        ss << "Command buffer " << LookupDebugUtilsNameNoLock(debug_report, HandleToUintPtr(commandBuffer)) << "("
+           << HandleToUintPtr(commandBuffer) << ")\n";
+#else   // !__CHERI_PURE_CAPABILITY__
         ss << "Command buffer " << LookupDebugUtilsNameNoLock(debug_report, HandleToUint64(commandBuffer)) << "("
            << HandleToUint64(commandBuffer) << ")\n";
+#endif  // !__CHERI_PURE_CAPABILITY__
         ss << std::dec << std::noshowbase;
         ss << '\t';  // helps to show that the index is expressed with respect to the command buffer
         if (pipeline_bind_point == VK_PIPELINE_BIND_POINT_GRAPHICS) {
@@ -1806,8 +1823,13 @@ std::string GpuShaderInstrumentor::GenerateDebugInfoMessage(VkCommandBuffer comm
         ss << std::hex << std::noshowbase;
 
         if (instrumented_shader->shader_module == VK_NULL_HANDLE) {
+#if defined(__CHERI_PURE_CAPABILITY__)
+            ss << "Shader Object " << LookupDebugUtilsNameNoLock(debug_report, HandleToUintPtr(instrumented_shader->shader_object))
+               << "(0x" << HandleToUintPtr(instrumented_shader->shader_object) << ") (internal ID " << std::dec
+#else   // !__CHERI_PURE_CAPABILITY__
             ss << "Shader Object " << LookupDebugUtilsNameNoLock(debug_report, HandleToUint64(instrumented_shader->shader_object))
                << "(0x" << HandleToUint64(instrumented_shader->shader_object) << ") (internal ID " << std::dec
+#endif  // !__CHERI_PURE_CAPABILITY__
                << shader_info.shader_id << ")\n";
         } else {
             if (instrumented_shader->shader_module == kPipelineStageInfoHandle) {
@@ -1815,8 +1837,13 @@ std::string GpuShaderInstrumentor::GenerateDebugInfoMessage(VkCommandBuffer comm
                    << shader_info.shader_id << ")\n";
             } else {
                 ss << "Shader Module "
+#if defined(__CHERI_PURE_CAPABILITY__)
+                   << LookupDebugUtilsNameNoLock(debug_report, HandleToUintPtr(instrumented_shader->shader_module)) << "(0x"
+                   << HandleToUintPtr(instrumented_shader->shader_module) << ") (internal ID " << std::dec << shader_info.shader_id
+#else   // !__CHERI_PURE_CAPABILITY__
                    << LookupDebugUtilsNameNoLock(debug_report, HandleToUint64(instrumented_shader->shader_module)) << "(0x"
                    << HandleToUint64(instrumented_shader->shader_module) << ") (internal ID " << std::dec << shader_info.shader_id
+#endif  // !__CHERI_PURE_CAPABILITY__
                    << ")\n";
             }
         }
