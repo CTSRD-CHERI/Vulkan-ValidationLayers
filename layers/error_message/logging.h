@@ -231,11 +231,13 @@ class DebugReport {
     std::string GetMarkerObjectNameNoLock(const uint64_t object) const;
 
     void SetDebugUtilsSeverityFlags(std::vector<VkLayerDbgFunctionState> &callbacks);
-    void RemoveDebugUtilsCallback(uint64_t callback);
-
 #if defined(__CHERI_PURE_CAPABILITY__)
+    void RemoveDebugUtilsCallback(uintptr_t callback);
+
     std::string FormatHandle(const char *handle_type_name, uintptr_t handle) const;
 #else // defined(__CHERI_PURE_CAPABILITY__)
+    void RemoveDebugUtilsCallback(uint64_t callback);
+
     std::string FormatHandle(const char *handle_type_name, uint64_t handle) const;
 #endif // defined(__CHERI_PURE_CAPABILITY__)
 
