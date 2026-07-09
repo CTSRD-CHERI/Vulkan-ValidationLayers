@@ -1382,21 +1382,45 @@ virtual void PreCallRecordDestroyPrivateDataSlot(VkDevice device, VkPrivateDataS
                                                  const VkAllocationCallbacks* pAllocator, const RecordObject& record_obj) {}
 virtual void PostCallRecordDestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                                   const VkAllocationCallbacks* pAllocator, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual bool PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual bool PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                            VkPrivateDataSlot privateDataSlot, uint64_t data, const ErrorObject& error_obj) const {
     return false;
 }
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PreCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PreCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                          VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                           VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual bool PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual bool PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                            VkPrivateDataSlot privateDataSlot, uint64_t* pData, const ErrorObject& error_obj) const {
     return false;
 }
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PreCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PreCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                          VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PostCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PostCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                           VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {}
 virtual bool PreCallValidateCmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo* pDependencyInfo,
                                                 const ErrorObject& error_obj) const {
@@ -4327,23 +4351,47 @@ virtual void PreCallRecordDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDa
                                                     const VkAllocationCallbacks* pAllocator, const RecordObject& record_obj) {}
 virtual void PostCallRecordDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                                      const VkAllocationCallbacks* pAllocator, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual bool PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual bool PreCallValidateSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                               VkPrivateDataSlot privateDataSlot, uint64_t data,
                                               const ErrorObject& error_obj) const {
     return false;
 }
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PreCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PreCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                             VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                              VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual bool PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual bool PreCallValidateGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                               VkPrivateDataSlot privateDataSlot, uint64_t* pData,
                                               const ErrorObject& error_obj) const {
     return false;
 }
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PreCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PreCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                             VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {}
+#if defined(__CHERI_PURE_CAPABILITY__)
+virtual void PostCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__)
 virtual void PostCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                              VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) {}
 #ifdef VK_ENABLE_BETA_EXTENSIONS
 virtual bool PreCallValidateCreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV* pCreateInfo,
