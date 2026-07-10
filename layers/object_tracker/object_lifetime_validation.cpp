@@ -1798,7 +1798,7 @@ bool Device::PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectT
 }
 
 #if defined(__CHERI_PURE_CAPABILITY__)
-bool Device::PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+bool Device::PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
 #else   // !__CHERI_PURE_CAPABILITY__
 bool Device::PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
 #endif  // !__CHERI_PURE_CAPABILITY__
