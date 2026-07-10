@@ -58,7 +58,11 @@ class CommandBufferSubState : public vvl::CommandBufferSubState {
     using OnInstrumentationDescSetUpdate =
         stdext::inplace_function<void(CommandBufferSubState &cb, VkPipelineBindPoint bind_point, const Location &loc,
                                       VkDescriptorBufferInfo &out_buffer_info, uint32_t &out_dst_binding),
+#if defined(__CHERI_PURE_CAPABILITY__)
+                                 80>;
+#elif   // !__CHERI_PURE_CAPABILITY__
                                  48>;
+#endif  // !__CHERI_PURE_CAPABILITY__
     using OnInstrumentationDescBufferUpdate =
         stdext::inplace_function<void(CommandBufferSubState &cb, VkPipelineBindPoint bind_point,
                                       VkDescriptorAddressInfoEXT &out_address_info, uint32_t &out_dst_binding),
