@@ -916,9 +916,17 @@ static VKAPI_ATTR VkResult VKAPI_CALL CreatePrivateDataSlot(VkDevice device, con
                                                             VkPrivateDataSlot* pPrivateDataSlot);
 static VKAPI_ATTR void VKAPI_CALL DestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                                          const VkAllocationCallbacks* pAllocator);
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                      VkPrivateDataSlot privateDataSlot, uint64_t data);
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR void VKAPI_CALL GetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR void VKAPI_CALL GetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                  VkPrivateDataSlot privateDataSlot, uint64_t* pData);
 static VKAPI_ATTR void VKAPI_CALL CmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo* pDependencyInfo);
 static VKAPI_ATTR void VKAPI_CALL CmdWriteTimestamp2(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage,
@@ -1768,9 +1776,17 @@ static VKAPI_ATTR VkResult VKAPI_CALL CreatePrivateDataSlotEXT(VkDevice device, 
                                                                VkPrivateDataSlot* pPrivateDataSlot);
 static VKAPI_ATTR void VKAPI_CALL DestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                                             const VkAllocationCallbacks* pAllocator);
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                         VkPrivateDataSlot privateDataSlot, uint64_t data);
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR void VKAPI_CALL GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR void VKAPI_CALL GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                     VkPrivateDataSlot privateDataSlot, uint64_t* pData);
 #ifdef VK_ENABLE_BETA_EXTENSIONS
 static VKAPI_ATTR VkResult VKAPI_CALL CreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV* pCreateInfo,
@@ -3639,12 +3655,20 @@ static VKAPI_ATTR VkResult VKAPI_CALL CreatePrivateDataSlot(VkDevice device, con
 static VKAPI_ATTR void VKAPI_CALL DestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                                          const VkAllocationCallbacks* pAllocator) {}
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                      VkPrivateDataSlot privateDataSlot, uint64_t data) {
     return VK_SUCCESS;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR void VKAPI_CALL GetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR void VKAPI_CALL GetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                  VkPrivateDataSlot privateDataSlot, uint64_t* pData) {}
 
 static VKAPI_ATTR void VKAPI_CALL CmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo* pDependencyInfo) {}
@@ -5249,12 +5273,20 @@ static VKAPI_ATTR void VKAPI_CALL DestroyPrivateDataSlotEXT(VkDevice device, VkP
     DestroyPrivateDataSlot(device, privateDataSlot, pAllocator);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR VkResult VKAPI_CALL SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                         VkPrivateDataSlot privateDataSlot, uint64_t data) {
     return SetPrivateData(device, objectType, objectHandle, privateDataSlot, data);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+static VKAPI_ATTR void VKAPI_CALL GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // __CHERI_PURE_CAPABILITY__
 static VKAPI_ATTR void VKAPI_CALL GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                     VkPrivateDataSlot privateDataSlot, uint64_t* pData) {
     GetPrivateData(device, objectType, objectHandle, privateDataSlot, pData);
 }
