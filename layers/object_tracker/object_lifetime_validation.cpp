@@ -274,7 +274,7 @@ bool Tracker::ValidateDestroyObject(VulkanTypedHandle object, const VkAllocation
 
     if ((expected_custom_allocator_code != kVUIDUndefined || expected_default_allocator_code != kVUIDUndefined) &&
 #if defined(__CHERI_PURE_CAPABILITY__)
-        object_handle != HandleToUintPtr(VK_NULL_HANDLE)) {
+        object_handle != HandleToUintPtr<uintptr_t>(VK_NULL_HANDLE)) {
 #else   // !__CHERI_PURE_CAPABILITY__
         object_handle != HandleToUint64(VK_NULL_HANDLE)) {
 #endif  // !__CHERI_PURE_CAPABILITY__
