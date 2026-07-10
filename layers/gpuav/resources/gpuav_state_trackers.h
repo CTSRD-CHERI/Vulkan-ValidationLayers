@@ -74,7 +74,11 @@ class CommandBufferSubState : public vvl::CommandBufferSubState {
                                       const CommandBufferSubState::LabelLogging &label_logging, const Location &submission_loc),
                                  64>;
     using OnPreCommandBufferSubmission =
+#if defined(__CHERI_PURE_CAPABILITY__)
+        stdext::inplace_function<void(Validator &gpuav, CommandBufferSubState &cb, VkCommandBuffer per_pre_submission_cb), 80>;
+#elif   // !__CHERI_PURE_CAPABILITY__
         stdext::inplace_function<void(Validator &gpuav, CommandBufferSubState &cb, VkCommandBuffer per_pre_submission_cb), 48>;
+#endif  // !__CHERI_PURE_CAPABILITY__
     using OnPostCommandBufferSubmission =
         stdext::inplace_function<void(Validator &gpuav, CommandBufferSubState &cb, VkCommandBuffer per_post_submission_cb)>;
     std::vector<OnInstrumentationErrorLoggerRegister> on_instrumentation_error_logger_register_functions;
