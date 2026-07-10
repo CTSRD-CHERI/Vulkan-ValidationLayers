@@ -45,7 +45,11 @@ WRAPPER(VkDisplayModeKHR)
 WRAPPER(VkDebugReportCallbackEXT)
 WRAPPER(VkDebugUtilsMessengerEXT)
 #else
+#if defined(__CHERI_PURE_CAPABILITY__)
+WRAPPER(uintptr_t)
+#elif   // !__CHERI_PURE_CAPABILITY__
 WRAPPER(uint64_t)
+#endif  // !__CHERI_PURE_CAPABILITY__
 #endif  // DISTINCT_NONDISPATCHABLE_HANDLES
 
 void InitCounters() {

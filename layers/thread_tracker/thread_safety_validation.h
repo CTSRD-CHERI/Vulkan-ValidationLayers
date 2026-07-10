@@ -29,8 +29,8 @@ namespace threadsafety {
 
 VK_DEFINE_NON_DISPATCHABLE_HANDLE(DISTINCT_NONDISPATCHABLE_PHONY_HANDLE)
 // The following line must match the vulkan_core.h condition guarding VK_DEFINE_NON_DISPATCHABLE_HANDLE
-#if defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__)) || defined(_M_X64) || defined(__ia64) || \
-    defined(_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)
+#if (defined(__LP64__) || defined(_WIN64) || (defined(__x86_64__) && !defined(__ILP32__)) || defined(_M_X64) || defined(__ia64) || \
+    defined(_M_IA64) || defined(__aarch64__) || defined(__powerpc64__)) && !defined(__CHERI_PURE_CAPABILITY__)
 // If pointers are 64-bit, then there can be separate counters for each
 // NONDISPATCHABLE_HANDLE type.  Otherwise they are all typedef uint64_t.
 #define DISTINCT_NONDISPATCHABLE_HANDLES
@@ -39,8 +39,13 @@ static_assert(std::is_pointer<DISTINCT_NONDISPATCHABLE_PHONY_HANDLE>::value,
               "Mismatched non-dispatchable handle handle, expected pointer type.");
 #else
 // Make sure we catch any disagreement between us and the vulkan definition
+#if defined(__CHERI_PURE_CAPABILITY__)
+static_assert(std::is_same<uintptr_t, DISTINCT_NONDISPATCHABLE_PHONY_HANDLE>::value,
+              "Mismatched non-dispatchable handle handle, expected uintptr_t.");
+#elif   // !__CHERI_PURE_CAPABILITY__
 static_assert(std::is_same<uint64_t, DISTINCT_NONDISPATCHABLE_PHONY_HANDLE>::value,
               "Mismatched non-dispatchable handle handle, expected uint64_t.");
+#endif  // !__CHERI_PURE_CAPABILITY__
 #endif
 
 // Modern CPUs have 64 or 128-byte cache line sizes (Apple M1 has 128-byte cache line size).
