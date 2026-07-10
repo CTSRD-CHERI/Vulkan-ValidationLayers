@@ -1192,16 +1192,32 @@ void PreCallRecordDestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot priv
 void PostCallRecordDestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                           const VkAllocationCallbacks* pAllocator, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PreCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PreCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                  uint64_t data, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PostCallRecordSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                   VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PreCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PreCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                  uint64_t* pData, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PostCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PostCallRecordGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                   VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) override;
 
 void PreCallRecordCmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo* pDependencyInfo,
@@ -3249,16 +3265,32 @@ void PreCallRecordDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot p
 void PostCallRecordDestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privateDataSlot,
                                              const VkAllocationCallbacks* pAllocator, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PreCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PreCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                     VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PostCallRecordSetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                      VkPrivateDataSlot privateDataSlot, uint64_t data, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PreCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PreCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                     VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) override;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void PostCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void PostCallRecordGetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                      VkPrivateDataSlot privateDataSlot, uint64_t* pData, const RecordObject& record_obj) override;
 
 #ifdef VK_ENABLE_BETA_EXTENSIONS
