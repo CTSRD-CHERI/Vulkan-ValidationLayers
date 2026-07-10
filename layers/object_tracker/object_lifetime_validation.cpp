@@ -1759,7 +1759,11 @@ bool Device::PreCallValidateGetDescriptorEXT(VkDevice device, const VkDescriptor
 }
 
 // Need to manually check if objectType and objectHandle are valid
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else   // !__CHERI_PURE_CAPABILITY__
 bool Device::PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                            VkPrivateDataSlot privateDataSlot, uint64_t data, const ErrorObject &error_obj) const {
     bool skip = false;
 
@@ -1789,7 +1793,11 @@ bool Device::PreCallValidateSetPrivateData(VkDevice device, VkObjectType objectT
     return skip;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
 bool Device::PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#else   // !__CHERI_PURE_CAPABILITY__
+bool Device::PreCallValidateGetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                            VkPrivateDataSlot privateDataSlot, uint64_t *pData, const ErrorObject &error_obj) const {
     bool skip = false;
     if (IsInstanceVkObjectType(objectType) || objectType == VK_OBJECT_TYPE_UNKNOWN) {
