@@ -32,7 +32,11 @@ Counter<VkDisplayModeKHR> c_VkDisplayModeKHR;
 Counter<VkDebugReportCallbackEXT> c_VkDebugReportCallbackEXT;
 Counter<VkDebugUtilsMessengerEXT> c_VkDebugUtilsMessengerEXT;
 #else
+#if defined(__CHERI_PURE_CAPABILITY__)
+Counter<uintptr_t> c_uintptr_t;
+#elif   // !__CHERI_PURE_CAPABILITY__
 Counter<uint64_t> c_uint64_t;
+#endif  // !__CHERI_PURE_CAPABILITY__
 #endif  // DISTINCT_NONDISPATCHABLE_HANDLES
 
 WRAPPER(VkInstance)
@@ -63,7 +67,11 @@ void InitCounters() {
     c_VkDebugReportCallbackEXT.Init(kVulkanObjectTypeDebugReportCallbackEXT, this);
     c_VkDebugUtilsMessengerEXT.Init(kVulkanObjectTypeDebugUtilsMessengerEXT, this);
 #else
+#if defined(__CHERI_PURE_CAPABILITY__)
+    c_uintptr_t.Init(kVulkanObjectTypeUnknown, this);
+#elif   // !__CHERI_PURE_CAPABILITY__
     c_uint64_t.Init(kVulkanObjectTypeUnknown, this);
+#endif  // !__CHERI_PURE_CAPABILITY__
 #endif  // DISTINCT_NONDISPATCHABLE_HANDLES
 }
 void PreCallRecordCreateInstance(const VkInstanceCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator,

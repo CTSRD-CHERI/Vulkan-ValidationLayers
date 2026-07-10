@@ -77,7 +77,11 @@ Counter<VkDataGraphPipelineSessionARM> c_VkDataGraphPipelineSessionARM;
 Counter<VkIndirectExecutionSetEXT> c_VkIndirectExecutionSetEXT;
 Counter<VkIndirectCommandsLayoutEXT> c_VkIndirectCommandsLayoutEXT;
 #else
+#if defined(__CHERI_PURE_CAPABILITY__)
+Counter<uintptr_t> c_uintptr_t;
+#elif   // !__CHERI_PURE_CAPABILITY__
 Counter<uint64_t> c_uint64_t;
+#endif  // !__CHERI_PURE_CAPABILITY__
 #endif  // DISTINCT_NONDISPATCHABLE_HANDLES
 
 WRAPPER(VkQueue)
@@ -142,8 +146,13 @@ WRAPPER_PARENT_INSTANCE(VkDisplayModeKHR)
 WRAPPER_PARENT_INSTANCE(VkDebugReportCallbackEXT)
 WRAPPER_PARENT_INSTANCE(VkDebugUtilsMessengerEXT)
 #else
+#if defined(__CHERI_PURE_CAPABILITY__)
+WRAPPER(uintptr_t)
+WRAPPER_PARENT_INSTANCE(uintptr_t)
+#elif   // !__CHERI_PURE_CAPABILITY__
 WRAPPER(uint64_t)
 WRAPPER_PARENT_INSTANCE(uint64_t)
+#endif  // !__CHERI_PURE_CAPABILITY__
 #endif  // DISTINCT_NONDISPATCHABLE_HANDLES
 
 void InitCounters() {
@@ -202,7 +211,11 @@ void InitCounters() {
     c_VkIndirectExecutionSetEXT.Init(kVulkanObjectTypeIndirectExecutionSetEXT, this);
     c_VkIndirectCommandsLayoutEXT.Init(kVulkanObjectTypeIndirectCommandsLayoutEXT, this);
 #else
+#if defined(__CHERI_PURE_CAPABILITY__)
+    c_uintptr_t.Init(kVulkanObjectTypeUnknown, this);
+#elif   // !__CHERI_PURE_CAPABILITY__
     c_uint64_t.Init(kVulkanObjectTypeUnknown, this);
+#endif  // !__CHERI_PURE_CAPABILITY__
 #endif  // DISTINCT_NONDISPATCHABLE_HANDLES
 }
 void PreCallRecordGetDeviceProcAddr(VkDevice device, const char* pName, const RecordObject& record_obj) override;

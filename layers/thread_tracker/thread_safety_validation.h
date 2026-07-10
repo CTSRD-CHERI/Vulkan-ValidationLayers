@@ -357,7 +357,11 @@ class Device : public vvl::base::Device {
 #ifdef DISTINCT_NONDISPATCHABLE_HANDLES
     Counter<VkCommandPool> c_VkCommandPoolContents;
 #else   // DISTINCT_NONDISPATCHABLE_HANDLES
+#if defined(__CHERI_PURE_CAPABILITY__)
+    Counter<uintptr_t> c_VkCommandPoolContents;
+#elif  // !__CHERI_PURE_CAPABILITY__
     Counter<uint64_t> c_VkCommandPoolContents;
+#endif // !__CHERI_PURE_CAPABILITY__
 #endif  // DISTINCT_NONDISPATCHABLE_HANDLES
 
     Instance *parent_instance;
