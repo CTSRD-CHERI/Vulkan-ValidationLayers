@@ -256,9 +256,17 @@ void CmdEndRenderPass2(VkCommandBuffer commandBuffer, const VkSubpassEndInfo* pS
 VkResult CreatePrivateDataSlot(VkDevice device, const VkPrivateDataSlotCreateInfo* pCreateInfo,
                                const VkAllocationCallbacks* pAllocator, VkPrivateDataSlot* pPrivateDataSlot);
 void DestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks* pAllocator);
+#if defined(__CHERI_PURE_CAPABILITY__)
+VkResult SetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#elif   // !__CHERI_PURE_CAPABILITY__
 VkResult SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif  // !__CHERI_PURE_CAPABILITY__
                         uint64_t data);
+#if defined(__CHERI_PURE_CAPABILITY__)
+void GetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void GetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif  // !__CHERI_PURE_CAPABILITY__
                     uint64_t* pData);
 void CmdPipelineBarrier2(VkCommandBuffer commandBuffer, const VkDependencyInfo* pDependencyInfo);
 void CmdWriteTimestamp2(VkCommandBuffer commandBuffer, VkPipelineStageFlags2 stage, VkQueryPool queryPool, uint32_t query);
@@ -733,9 +741,17 @@ void CmdSetDepthBias2EXT(VkCommandBuffer commandBuffer, const VkDepthBiasInfoEXT
 VkResult CreatePrivateDataSlotEXT(VkDevice device, const VkPrivateDataSlotCreateInfo* pCreateInfo,
                                   const VkAllocationCallbacks* pAllocator, VkPrivateDataSlot* pPrivateDataSlot);
 void DestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privateDataSlot, const VkAllocationCallbacks* pAllocator);
+#if defined(__CHERI_PURE_CAPABILITY__)
+VkResult SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#elif   // !__CHERI_PURE_CAPABILITY__
 VkResult SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif  // !__CHERI_PURE_CAPABILITY__
                            uint64_t data);
+#if defined(__CHERI_PURE_CAPABILITY__)
+void GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#elif   // !__CHERI_PURE_CAPABILITY__
 void GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif  // !__CHERI_PURE_CAPABILITY__
                        uint64_t* pData);
 #ifdef VK_ENABLE_BETA_EXTENSIONS
 VkResult CreateCudaModuleNV(VkDevice device, const VkCudaModuleCreateInfoNV* pCreateInfo, const VkAllocationCallbacks* pAllocator,
