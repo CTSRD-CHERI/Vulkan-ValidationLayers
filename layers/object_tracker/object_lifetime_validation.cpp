@@ -264,7 +264,11 @@ bool Tracker::ValidateDestroyObject(VulkanTypedHandle object, const VkAllocation
                                     const Location &loc) const {
     bool skip = false;
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+    const uintptr_t object_handle = object.handle;
+#else   // !__CHERI_PURE_CAPABILITY__
     const uint64_t object_handle = object.handle;
+#endif  // !__CHERI_PURE_CAPABILITY__
     const VulkanObjectType object_type = object.type;
     const bool custom_allocator = pAllocator != nullptr;
 
@@ -350,7 +354,11 @@ void Tracker::DestroyUndestroyedObjects(VulkanObjectType object_type, const Loca
     }
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::ValidateAnonymousObject(uintptr_t object, VkObjectType core_object_type, const char *invalid_handle_vuid,
+#else   // !__CHERI_PURE_CAPABILITY__
 bool Device::ValidateAnonymousObject(uint64_t object, VkObjectType core_object_type, const char *invalid_handle_vuid,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                      const char *wrong_parent_vuid, const Location &loc) const {
     VulkanTypedHandle typed_handle;
     typed_handle.handle = object;
@@ -1409,7 +1417,11 @@ bool Device::PreCallValidateSetDebugUtilsObjectNameEXT(VkDevice device, const Vk
     bool skip = false;
     // Checked by chassis: device: "VUID-vkSetDebugUtilsObjectNameEXT-device-parameter"
     const VkObjectType object_type = pNameInfo->objectType;
+#if defined(__CHERI_PURE_CAPABILITY__)
+    const uintptr_t object_handle = pNameInfo->objectHandle;
+#else   // !__CHERI_PURE_CAPABILITY__
     const uint64_t object_handle = pNameInfo->objectHandle;
+#endif  // !__CHERI_PURE_CAPABILITY__
 
     if (IsInstanceVkObjectType(object_type)) {
         // TODO - need to check if device is from a valid instance/physical device
@@ -1439,7 +1451,11 @@ bool Device::PreCallValidateSetDebugUtilsObjectTagEXT(VkDevice device, const VkD
     // Checked by chassis: device: "VUID-vkSetDebugUtilsObjectTagEXT-device-parameter"
 
     const VkObjectType object_type = pTagInfo->objectType;
+#if defined(__CHERI_PURE_CAPABILITY__)
+    const uintptr_t object_handle = pTagInfo->objectHandle;
+#else   // !__CHERI_PURE_CAPABILITY__
     const uint64_t object_handle = pTagInfo->objectHandle;
+#endif  // !__CHERI_PURE_CAPABILITY__
 
     if (IsInstanceVkObjectType(object_type)) {
         // TODO - need to check if device is from a valid instance/physical device
