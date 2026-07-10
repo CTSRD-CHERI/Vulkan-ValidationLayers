@@ -2338,7 +2338,11 @@ void Device::DestroyPrivateDataSlot(VkDevice device, VkPrivateDataSlot privateDa
     device_dispatch_table.DestroyPrivateDataSlot(device, privateDataSlot, pAllocator);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+VkResult Device::SetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#else  // __CHERI_PURE_CAPABILITY__
 VkResult Device::SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif // __CHERI_PURE_CAPABILITY__
                                 uint64_t data) {
     if (!wrap_handles) return device_dispatch_table.SetPrivateData(device, objectType, objectHandle, privateDataSlot, data);
     {
@@ -2352,7 +2356,11 @@ VkResult Device::SetPrivateData(VkDevice device, VkObjectType objectType, uint64
     return result;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::GetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#else  // __CHERI_PURE_CAPABILITY__
 void Device::GetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif // __CHERI_PURE_CAPABILITY__
                             uint64_t* pData) {
     if (!wrap_handles) return device_dispatch_table.GetPrivateData(device, objectType, objectHandle, privateDataSlot, pData);
     {
@@ -6995,7 +7003,11 @@ void Device::DestroyPrivateDataSlotEXT(VkDevice device, VkPrivateDataSlot privat
     device_dispatch_table.DestroyPrivateDataSlotEXT(device, privateDataSlot, pAllocator);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+VkResult Device::SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#else  // __CHERI_PURE_CAPABILITY__
 VkResult Device::SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif // __CHERI_PURE_CAPABILITY__
                                    VkPrivateDataSlot privateDataSlot, uint64_t data) {
     if (!wrap_handles) return device_dispatch_table.SetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, data);
     {
@@ -7009,7 +7021,11 @@ VkResult Device::SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uin
     return result;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+void Device::GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#else  // __CHERI_PURE_CAPABILITY__
 void Device::GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle, VkPrivateDataSlot privateDataSlot,
+#endif // __CHERI_PURE_CAPABILITY__
                                uint64_t* pData) {
     if (!wrap_handles) return device_dispatch_table.GetPrivateDataEXT(device, objectType, objectHandle, privateDataSlot, pData);
     {
