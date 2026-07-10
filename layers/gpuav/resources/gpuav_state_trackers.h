@@ -137,7 +137,11 @@ class CommandBufferSubState : public vvl::CommandBufferSubState {
     using ErrorLoggerFunc =
         stdext::inplace_function<bool(const uint32_t *error_record, const Location &loc_with_debug_region,
                                       const LogObjectList &objlist),
+#if defined(__CHERI_PURE_CAPABILITY__)
+                                 128 /*lambda storage size (bytes), large enough to store biggest error lambda*/>;
+#elif   // !__CHERI_PURE_CAPABILITY__
                                  80 /*lambda storage size (bytes), large enough to store biggest error lambda*/>;
+#endif  // !__CHERI_PURE_CAPABILITY__
     struct CommandErrorLogger {
         vvl::LocationCapture loc;
         LogObjectList objlist;
