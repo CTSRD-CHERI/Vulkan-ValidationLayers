@@ -7691,7 +7691,11 @@ VKAPI_ATTR void VKAPI_CALL DestroyPrivateDataSlot(VkDevice device, VkPrivateData
     }
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
 VKAPI_ATTR VkResult VKAPI_CALL SetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
+VKAPI_ATTR VkResult VKAPI_CALL SetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                               VkPrivateDataSlot privateDataSlot, uint64_t data) {
     VVL_ZoneScoped;
 
@@ -7739,7 +7743,11 @@ VKAPI_ATTR VkResult VKAPI_CALL SetPrivateData(VkDevice device, VkObjectType obje
     return result;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+VKAPI_ATTR void VKAPI_CALL GetPrivateData(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 VKAPI_ATTR void VKAPI_CALL GetPrivateData(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                           VkPrivateDataSlot privateDataSlot, uint64_t* pData) {
     VVL_ZoneScoped;
 
@@ -25361,7 +25369,11 @@ VKAPI_ATTR void VKAPI_CALL DestroyPrivateDataSlotEXT(VkDevice device, VkPrivateD
     }
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+VKAPI_ATTR VkResult VKAPI_CALL SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 VKAPI_ATTR VkResult VKAPI_CALL SetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                                  VkPrivateDataSlot privateDataSlot, uint64_t data) {
     VVL_ZoneScoped;
 
@@ -25409,7 +25421,11 @@ VKAPI_ATTR VkResult VKAPI_CALL SetPrivateDataEXT(VkDevice device, VkObjectType o
     return result;
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+VKAPI_ATTR void VKAPI_CALL GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uintptr_t objectHandle,
+#elif   // !__CHERI_PURE_CAPABILITY__
 VKAPI_ATTR void VKAPI_CALL GetPrivateDataEXT(VkDevice device, VkObjectType objectType, uint64_t objectHandle,
+#endif  // !__CHERI_PURE_CAPABILITY__
                                              VkPrivateDataSlot privateDataSlot, uint64_t* pData) {
     VVL_ZoneScoped;
 
