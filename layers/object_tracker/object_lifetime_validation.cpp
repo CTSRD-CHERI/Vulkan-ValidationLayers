@@ -203,7 +203,11 @@ void Device::FinishDeviceSetup(const VkDeviceCreateInfo *pCreateInfo, const Loca
     tracker.SetDeviceHandle(*this);
 }
 
+#if defined(__CHERI_PURE_CAPABILITY__)
+bool Device::CheckPipelineObjectValidity(uintptr_t object_handle, const char *invalid_handle_vuid, const Location &loc) const {
+#else   // !__CHERI_PURE_CAPABILITY__
 bool Device::CheckPipelineObjectValidity(uint64_t object_handle, const char *invalid_handle_vuid, const Location &loc) const {
+#endif  // !__CHERI_PURE_CAPABILITY__
     bool skip = false;
     const auto &itr = linked_graphics_pipeline_map.find(object_handle);
     if (itr == linked_graphics_pipeline_map.end()) {
